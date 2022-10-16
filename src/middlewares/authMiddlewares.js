@@ -2,28 +2,26 @@ import { connection } from "../db/db.js";
 import jwt from "jsonwebtoken";
 
 async function authMiddleware(req, res, next) {
-  let token = req.headers?.authorization;
-  token = token.replace("Bearer ", "");
-
   try {
+    let token = req.headers?.authorization;
+    token = token.replace("Bearer ", "");
+
     const verifyToken = jwt.verify(token, "token_key");
+
+    const isActive = await connection.query(
+      `SELECT * FROM sessions WHERE user_id=$1 AND active=TRUE;`,
+      [verifyToken.userId]
+    );
+
+    if (isActive.rows.length === 0) {
+      res.status(401).send("Unauthorized");
+    }
+    res.locals.userId = verifyToken.userId;
+
+    next();
   } catch (error) {
-    connection.query(`DELETE FROM sessions WHERE token=$1;`, [token]);
-    res.status(401).send(error.message);
+    res.status(401).send("Unauthorized");
   }
-
-  const isActive = await connection.query(
-    `SELECT * FROM sessions WHERE user_id=$1 AND active=TRUE;`,
-    [verifyToken.userId]
-  );
-
-  if (isActive.rows.length === 0) {
-    res.status(401).send("unauthorized");
-  }
-
-  res.locals.userId = verifyToken.userId;
-
-  next();
 }
 
 export { authMiddleware };

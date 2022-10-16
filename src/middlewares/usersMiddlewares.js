@@ -1,6 +1,5 @@
 import { connection } from "../db/db.js";
 import { signUpSchema } from "../schemas/usersSchemas.js";
-import joi from "joi";
 import bcrypt from "bcrypt";
 
 async function signUpMiddleware(req, res, next) {

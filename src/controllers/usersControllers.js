@@ -37,4 +37,18 @@ const signIn = async (req, res) => {
   }
 };
 
-export { signUp, signIn };
+const listUser = async (req, res) => {
+  try {
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
+const listRank = async (req, res) => {
+  try {
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
+export { signUp, signIn, listUser, listRank };
