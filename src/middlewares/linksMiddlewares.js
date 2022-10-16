@@ -14,3 +14,5 @@ async function createLinkMiddleware(req, res, next) {
 
   next();
 }
+
+export { createLinkMiddleware };

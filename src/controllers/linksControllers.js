@@ -33,4 +33,19 @@ const filterLinks = async (req, res) => {
   }
 };
 
-export { createLink, filterLinks };
+const deleteLink = async (req, res) => {
+  try {
+    const userId = res.locals.userId;
+
+    const urlId = req.params.id;
+
+    await linksModels.deleteLink(urlId, userId);
+
+    res.status(204).send("Url deleted");
+  } catch (error) {
+    console.log("caiu aqui");
+    res.status(400).send(error.message);
+  }
+};
+
+export { createLink, filterLinks, deleteLink };

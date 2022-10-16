@@ -17,4 +17,12 @@ async function filterLinks(urlId) {
   return result;
 }
 
-export { createLink, filterLinks };
+async function deleteLink(urlId, userId) {
+  const result = await connection.query(
+    `DELETE FROM links WHERE id=$1 AND user_id=$2`,
+    [urlId, userId]
+  );
+  return result;
+}
+
+export { createLink, filterLinks, deleteLink };
