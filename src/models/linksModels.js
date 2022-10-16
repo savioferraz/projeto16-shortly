@@ -8,4 +8,13 @@ async function createLink(userId, url, shortUrl) {
   return result;
 }
 
-export { createLink };
+async function filterLinks(urlId) {
+  const result = await connection.query(
+    `SELECT id, short_url AS "shortUrl", url FROM links WHERE id=$1;
+    `,
+    [urlId]
+  );
+  return result;
+}
+
+export { createLink, filterLinks };
