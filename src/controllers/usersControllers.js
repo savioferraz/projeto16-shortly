@@ -39,6 +39,11 @@ const signIn = async (req, res) => {
 
 const listUser = async (req, res) => {
   try {
+    const userId = res.locals.userId;
+
+    const result = await usersModels.listUser(userId);
+
+    res.status(200).send(result.rows);
   } catch (error) {
     res.status(400).send(error.message);
   }
@@ -47,7 +52,7 @@ const listUser = async (req, res) => {
 const listRank = async (req, res) => {
   try {
   } catch (error) {
-    res.status(400).send(error.message);
+    res.status(404).send(error.message);
   }
 };
 

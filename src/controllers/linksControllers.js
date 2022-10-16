@@ -33,6 +33,18 @@ const filterLinks = async (req, res) => {
   }
 };
 
+const redirectLink = async (req, res) => {
+  try {
+    const shortUrl = req.params.shortUrl;
+
+    const result = await linksModels.redirectLink(shortUrl);
+
+    res.redirect(302, result.rows[0].url);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
 const deleteLink = async (req, res) => {
   try {
     const userId = res.locals.userId;
@@ -48,4 +60,4 @@ const deleteLink = async (req, res) => {
   }
 };
 
-export { createLink, filterLinks, deleteLink };
+export { createLink, filterLinks, deleteLink, redirectLink };
