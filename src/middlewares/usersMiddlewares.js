@@ -38,6 +38,7 @@ async function signInMiddleware(req, res, next) {
     const passDecrypt = bcrypt.compareSync(password, user.rows[0].password);
 
     if (passDecrypt) {
+      res.locals.user = user.rows[0];
       next();
     } else {
       res.status(409).send("Invalid email or password");

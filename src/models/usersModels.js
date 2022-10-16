@@ -8,11 +8,11 @@ async function signUp(email, name, passwordHash) {
   return result;
 }
 
-async function login(email, token) {
-  const result = await connection.query(`INSERT INTO sessions `, [
-    email,
-    token,
-  ]);
+async function login(userId, token) {
+  const result = await connection.query(
+    `INSERT INTO sessions (user_id, token) VALUES ($1, $2)`,
+    [userId, token]
+  );
   return result;
 }
 

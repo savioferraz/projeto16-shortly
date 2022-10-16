@@ -1,7 +1,6 @@
-import { connection } from "../db/db.js";
 import * as usersModels from "../models/usersModels.js";
 import bcrypt from "bcrypt";
-import { v4 as uuid } from "uuid";
+import jwt from "jsonwebtoken";
 
 const signUp = async (req, res) => {
   try {
@@ -18,13 +17,21 @@ const signUp = async (req, res) => {
 
 const signIn = async (req, res) => {
   try {
-    const { email } = req.body;
+    const user = res.locals.user;
 
-    const user = await connection.query(`SELECT * FROM users WHERE email=$1`, [
-      email,
-    ]);
+    const token = jwt.sign(
+      {
+        userId: user.id,
+      },
+      "token_key",
+      {
+        expiresIn: 1800,
+      }
+    );
 
-    res.status(201).send("Loged in");
+    await usersModels.login(user.id, token);
+
+    res.status(200).send("Loged in");
   } catch (error) {
     res.status(400).send(error.message);
   }
