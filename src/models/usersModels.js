@@ -49,4 +49,19 @@ async function listRank() {
   return result;
 }
 
-export { signUp, login, listUser, listRank };
+async function getEmail(email) {
+  const result = await connection.query(`SELECT * FROM users WHERE email=$1`, [
+    email,
+  ]);
+  return result;
+}
+
+async function getToken(token) {
+  const result = await connection.query(
+    `SELECT * FROM sessions WHERE user_id=$1 AND active=TRUE;`,
+    [token]
+  );
+  return result;
+}
+
+export { signUp, login, listUser, listRank, getEmail, getToken };

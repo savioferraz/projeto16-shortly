@@ -1,4 +1,4 @@
-import { connection } from "../db/db.js";
+import * as usersModels from "../models/usersModels.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
@@ -11,10 +11,7 @@ async function authMiddleware(req, res, next) {
 
     const verifyToken = jwt.verify(token, process.env.TOKEN_SECRET);
 
-    const isActive = await connection.query(
-      `SELECT * FROM sessions WHERE user_id=$1 AND active=TRUE;`,
-      [verifyToken.userId]
-    );
+    const isActive = await usersModels.getToken(verifyToken.userId);
 
     if (isActive.rows.length === 0) {
       res.status(401).send("Unauthorized");

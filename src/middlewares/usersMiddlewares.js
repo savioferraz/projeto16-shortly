@@ -1,14 +1,11 @@
-import { connection } from "../db/db.js";
+import * as usersModels from "../models/usersModels.js";
 import { signUpSchema } from "../schemas/usersSchemas.js";
 import bcrypt from "bcrypt";
 
 async function signUpMiddleware(req, res, next) {
   const userData = req.body;
 
-  const sameEmail = await connection.query(
-    `SELECT * FROM users WHERE email=$1`,
-    [userData.email]
-  );
+  const sameEmail = await usersModels.getEmail(userData.email);
 
   const validation = signUpSchema.validate(userData, { abortEarly: false });
 
@@ -29,9 +26,7 @@ async function signUpMiddleware(req, res, next) {
 async function signInMiddleware(req, res, next) {
   const { email, password } = req.body;
 
-  const user = await connection.query(`SELECT * FROM users WHERE email=$1`, [
-    email,
-  ]);
+  const user = await usersModels.getEmail(email);
 
   if (user.rows[0]) {
     const passDecrypt = bcrypt.compareSync(password, user.rows[0].password);
