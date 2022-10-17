@@ -19,11 +19,11 @@ const createLink = async (req, res) => {
 
 const filterLinks = async (req, res) => {
   try {
-    const urlId = req.params.id;
+    const urlId = parseInt(req.params.id);
 
     const result = await linksModels.filterLinks(urlId);
 
-    if (!result.rows[0]) {
+    if (result.rows.length === 0) {
       res.status(404).send("Invalid url id");
     }
 

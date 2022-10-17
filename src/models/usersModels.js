@@ -33,4 +33,18 @@ async function listUser(userId) {
   return result;
 }
 
-export { signUp, login, listUser };
+async function listRank() {
+  const result = await connection.query(
+    `
+    SELECT users.id, users.name, COUNT(links.user_id) AS "linksCount", COALESCE(SUM(links.visit_count),0) AS "visitCount"
+    FROM users
+    LEFT JOIN links ON users.id=links.user_id
+    GROUP BY users.id
+    ORDER BY "visitCount" DESC, "linksCount" DESC
+    LIMIT 10;
+    `
+  );
+  return result;
+}
+
+export { signUp, login, listUser, listRank };

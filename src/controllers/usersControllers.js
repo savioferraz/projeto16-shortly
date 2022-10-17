@@ -51,6 +51,9 @@ const listUser = async (req, res) => {
 
 const listRank = async (req, res) => {
   try {
+    const result = await usersModels.listRank();
+
+    res.status(200).send(result.rows);
   } catch (error) {
     res.status(404).send(error.message);
   }
