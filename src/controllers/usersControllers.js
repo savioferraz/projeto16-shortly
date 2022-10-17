@@ -1,6 +1,9 @@
 import * as usersModels from "../models/usersModels.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const signUp = async (req, res) => {
   try {
@@ -23,7 +26,7 @@ const signIn = async (req, res) => {
       {
         userId: user.id,
       },
-      "token_key",
+      process.env.TOKEN_SECRET,
       {
         expiresIn: 1800,
       }
@@ -42,6 +45,10 @@ const listUser = async (req, res) => {
     const userId = res.locals.userId;
 
     const result = await usersModels.listUser(userId);
+
+    if (result.rows[0].shortenedUrls[0].id === null) {
+      result.rows[0].shortenedUrls = [];
+    }
 
     res.status(200).send(result.rows);
   } catch (error) {

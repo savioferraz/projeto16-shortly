@@ -24,10 +24,12 @@ async function listUser(userId) {
   const result = await connection.query(
     `
     SELECT 
-      users.id, users.name, links.id as "linkId", links.short_url as "shortUrl", links.url, links.visit_count as "visitCount" 
+      users.id, users.name, COALESCE(SUM(links.visit_count),0) as "visitCount", 
+      json_agg(json_build_object('id', links.id, 'shortUrl', links.short_url, 'url', links.url, 'visitCount', links.visit_count)) as "shortenedUrls" 
     FROM users 
-    JOIN links ON users.id = links.user_id
-    WHERE users.id=$1; `,
+    LEFT JOIN links ON users.id = links.user_id
+    WHERE users.id=$1
+    GROUP BY users.id;`,
     [userId]
   );
   return result;
